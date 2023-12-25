@@ -11,19 +11,29 @@ const [time, distance] = dataLines.map((arr) => arr.map(Number));
 
 let waysToWin = 0;
 
+//binary search from mid point, if win, check left to mid
+
 for (let i = 0; i < time.length; i++) {
   const [t, d] = [time[i], distance[i]];
+  const timeMidPoint = Math.floor((t - 1) / 2);
+  let left = 1;
+  let right = timeMidPoint;
   let winCount = 0;
-  for (let j = Math.floor((t - 1) / 2); j > 0; j--) {
-    if ((t - j) * j > d) {
-      winCount += 2;
+
+  while (left < right) {
+    const currMidPoint = Math.floor((left + right) / 2);
+    if (currMidPoint === left) break;
+    if ((t - currMidPoint) * currMidPoint > d) {
+      right = currMidPoint;
     } else {
-      break;
+      left = currMidPoint;
     }
   }
 
-  if ((t - 1) % 2 !== 0 && winCount !== 0) {
-    winCount += 1;
+  winCount = (timeMidPoint - left) * 2;
+
+  if ((t - 1) % 2 !== 0 && (t - t / 2) * (t / 2) > d) {
+    winCount++;
   }
 
   if (waysToWin === 0) {

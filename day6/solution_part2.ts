@@ -7,22 +7,35 @@ const regex = /\d+/g;
 const lines = data.split("\n");
 const dataLines = lines.map((line) => line.match(regex) as RegExpMatchArray);
 
-const [time, distance] = dataLines.map((arr) =>
+const [t, d] = dataLines.map((arr) =>
   Number(arr.reduce((prev, curr) => prev + curr, ""))
 );
 
+const timeMidPoint = Math.floor((t - 1) / 2);
+let left = 1;
+let right = timeMidPoint;
+let winCount = 0;
 let waysToWin = 0;
 
-for (let j = Math.floor((time - 1) / 2); j > 0; j--) {
-  if ((time - j) * j > distance) {
-    waysToWin += 2;
+while (left < right) {
+  const currMidPoint = Math.floor((left + right) / 2);
+  if (currMidPoint === left) break;
+  if ((t - currMidPoint) * currMidPoint > d) {
+    right = currMidPoint;
   } else {
-    break;
+    left = currMidPoint;
   }
 }
 
-if ((time - 1) % 2 !== 0 && waysToWin !== 0) {
-  waysToWin += 1;
+winCount = (timeMidPoint - left) * 2;
+
+if ((t - 1) % 2 !== 0 && (t - t / 2) * (t / 2) > d) {
+  winCount++;
 }
 
+if (waysToWin === 0) {
+  waysToWin = winCount;
+} else {
+  waysToWin *= winCount;
+}
 console.log(waysToWin);
